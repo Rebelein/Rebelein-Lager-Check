@@ -5,7 +5,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, PanelLeft, Building, Printer, ClipboardCheck, ShoppingCart, BarChartHorizontal, Package, History, Warehouse, FileDown, LineChart, Wrench, ScrollText, type LucideIcon, Star, PlusCircle, MoreVertical, Pencil, Trash2, GripVertical, ScanLine } from 'lucide-react';
+import { Settings, PanelLeft, Building, Printer, ClipboardCheck, ShoppingCart, BarChartHorizontal, Package, History, Warehouse, FileDown, LineChart, Wrench, ScrollText, type LucideIcon, Star, PlusCircle, MoreVertical, Pencil, Trash2, GripVertical, ScanLine, Pin, PinOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
@@ -107,7 +107,7 @@ const SortableNavLink = ({ id, item, active, isNavSortable, onClick }: { id: str
     );
 };
 
-const SortableTooltipLink = ({ id, item, active, isNavSortable }: { id: string, item: NavItem, active: boolean, isNavSortable: boolean }) => {
+const SortableTooltipLink = ({ id, item, active, isNavSortable, isExpanded }: { id: string, item: NavItem, active: boolean, isNavSortable: boolean, isExpanded: boolean }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id, disabled: !isNavSortable });
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -117,24 +117,22 @@ const SortableTooltipLink = ({ id, item, active, isNavSortable }: { id: string, 
     return (
         <Tooltip>
             <TooltipTrigger asChild>
-                <div ref={setNodeRef} style={style} className="flex items-center">
+                <div ref={setNodeRef} style={style} className="flex items-center w-full">
                     {isNavSortable && (
-                         <div {...listeners} {...attributes} className={cn("py-2 pr-1 -ml-2 text-muted-foreground/50 hover:text-muted-foreground cursor-grab")}>
+                         <div {...listeners} {...attributes} className={cn("p-2 text-muted-foreground/50 hover:text-muted-foreground cursor-grab")}>
                             <GripVertical className="h-4 w-4" />
                         </div>
                     )}
                     <Link
                         href={item.href}
                         className={cn(
-                            'group relative flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-300 ease-in-out md:h-8 md:w-8',
-                            active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
-                            'hover:w-32', // Expand width on hover
-                            !isNavSortable && 'ml-4' // Adjust margin when not sortable
+                            'flex h-9 items-center justify-start rounded-lg transition-colors duration-200 gap-4 w-full',
+                             active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
+                             isNavSortable ? 'px-2' : 'px-3'
                         )}
                     >
-                        <item.icon className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110" />
-                        <span className="sr-only">{item.label}</span>
-                        <span className="absolute left-10 text-sm font-medium opacity-0 transition-opacity duration-300 group-hover:opacity-100 whitespace-nowrap">
+                        <item.icon className="h-5 w-5 shrink-0" />
+                        <span className={cn("text-sm font-medium transition-opacity duration-200 whitespace-nowrap", isExpanded ? "opacity-100" : "opacity-0")}>
                             {item.label}
                         </span>
                     </Link>
@@ -157,7 +155,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
   
   const [isGlobalScannerOpen, setIsGlobalScannerOpen] = React.useState(false);
-
+  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(false);
+  const [isSidebarPinned, setIsSidebarPinned] = React.useState(false);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -275,7 +274,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen w-full app-background">
        {isClient ? (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <aside className={cn("hidden w-14 flex-col border-r bg-background/80 sm:flex", !showApp && 'pointer-events-none opacity-50')}>
+            <aside 
+              className={cn("hidden flex-col border-r bg-background/80 sm:flex transition-all duration-300 ease-in-out", isSidebarExpanded || isSidebarPinned ? 'w-56' : 'w-14', !showApp && 'pointer-events-none opacity-50')}
+              onMouseEnter={() => !isSidebarPinned && setIsSidebarExpanded(true)}
+              onMouseLeave={() => !isSidebarPinned && setIsSidebarExpanded(false)}
+            >
                 <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
                 <Link
                     href="/dashboard"
@@ -292,15 +295,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         item={item} 
                         active={isLinkActive(item.href)} 
                         isNavSortable={isNavSortable} 
+                        isExpanded={isSidebarExpanded || isSidebarPinned}
                     />
                     ))}
                 </SortableContext>
+                </nav>
+                 <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground" onClick={() => setIsSidebarPinned(!isSidebarPinned)}>
+                        {isSidebarPinned ? <PinOff className="h-5 w-5" /> : <Pin className="h-5 w-5" />}
+                    </Button>
                 </nav>
             </aside>
         </DndContext>
       ) : <aside className="hidden w-14 flex-col border-r bg-background/80 sm:flex" />}
       
-      <div className="flex flex-1 flex-col sm:gap-4 sm:py-4 sm:pl-14">
+      <div className={cn("flex flex-1 flex-col sm:gap-4 sm:py-4 transition-all duration-300 ease-in-out", isSidebarPinned ? 'sm:pl-56' : 'sm:pl-14')}>
         <header className={cn("sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/80 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6", !showApp && 'pointer-events-none opacity-50')}>
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
