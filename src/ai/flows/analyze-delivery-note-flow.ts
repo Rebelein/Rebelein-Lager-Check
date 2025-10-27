@@ -172,7 +172,7 @@ ${input.deliveryNoteText}
         
         const { output } = await ai.generate({
           prompt: systemPrompt,
-          model: modelToUse,
+          model: `googleai/${modelToUse}`,
           output: {
             schema: AnalyzeDeliveryNoteOutputSchema,
           },

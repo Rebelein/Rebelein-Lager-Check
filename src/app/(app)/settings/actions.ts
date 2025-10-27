@@ -37,9 +37,10 @@ export async function testAiConnection(params: TestConnectionParams): Promise<{ 
             });
 
         } else { // Für 'google'
+            const modelToUse = `googleai/${params.model}`;
             
             await ai.generate({
-                model: params.model,
+                model: modelToUse,
                 prompt: 'Hallo',
                 config: {
                     apiKey: params.apiKey,

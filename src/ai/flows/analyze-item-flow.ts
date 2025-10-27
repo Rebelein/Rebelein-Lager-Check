@@ -133,7 +133,7 @@ You must identify the following fields. If you cannot find a specific piece of i
             {text: systemPrompt},
             ...context
           ],
-          model: modelToUse,
+          model: `googleai/${modelToUse}`,
           output: {
             schema: AnalyzeItemOutputSchema,
           },
