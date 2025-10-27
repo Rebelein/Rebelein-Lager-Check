@@ -169,10 +169,6 @@ ${input.deliveryNoteText}
         if (!modelToUse) {
              throw new Error("Google AI model not specified.");
         }
-
-        if (input.provider === 'google' && !modelToUse.startsWith('googleai/')) {
-            modelToUse = `googleai/${modelToUse}`;
-        }
         
         const { output } = await ai.generate({
           prompt: systemPrompt,

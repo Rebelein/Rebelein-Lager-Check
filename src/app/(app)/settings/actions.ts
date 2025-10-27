@@ -1,3 +1,4 @@
+
 'use server';
 
 // WICHTIG: Die zentrale 'ai' Instanz aus genkit.ts importieren
@@ -42,11 +43,6 @@ export async function testAiConnection(params: TestConnectionParams): Promise<{ 
             // Wir verwenden jetzt die zentrale 'ai' Instanz.
             
             let modelToUse = params.model;
-
-            // KORREKTUR: Wir fügen den 'googleai/' Präfix hinzu, genau wie im analyze-item-flow.
-            if (params.provider === 'google' && !modelToUse.startsWith('googleai/')) {
-                modelToUse = `googleai/${modelToUse}`;
-            }
 
             await ai.generate({
                 model: modelToUse,
