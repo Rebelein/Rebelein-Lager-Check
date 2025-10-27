@@ -37,10 +37,10 @@ export async function testAiConnection(params: TestConnectionParams): Promise<{ 
             });
 
         } else { // Für 'google'
-            const modelToUse = `googleai/${params.model}`;
+            const modelToUse = params.model;
             
             await ai.generate({
-                model: modelToUse,
+                model: `googleai/${modelToUse}`,
                 prompt: 'Hallo',
                 config: {
                     apiKey: params.apiKey,
@@ -64,6 +64,9 @@ export async function testAiConnection(params: TestConnectionParams): Promise<{ 
         
         if (errorMessage.includes("API key not valid")) {
             errorMessage = "Der API-Schlüssel ist ungültig oder hat nicht die nötigen Berechtigungen."
+        }
+        if (errorMessage.includes("API key is required")) {
+             errorMessage = "Der API-Schlüssel ist ungültig oder hat nicht die nötigen Berechtigungen."
         }
         
         return { success: false, error: errorMessage };
