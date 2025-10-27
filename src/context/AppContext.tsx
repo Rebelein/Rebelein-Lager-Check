@@ -188,7 +188,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const [readNotificationIds, setReadNotificationIds] = useState<Set<string>>(new Set());
   const [dismissedNotificationIds, setDismissedNotificationIds] = useState<Set<string>>(() => {
-    return getFromLocalStorage<Set<string>>('dismissedNotifications', new Set());
+    // Correctly initialize from localStorage
+    const saved = getFromLocalStorage<string[]>('dismissedNotifications', []);
+    return new Set(saved);
   });
   
   const [dashboardLayout, setDashboardLayoutState] = useState<DashboardCardLayout[]>(allDashboardCards);
