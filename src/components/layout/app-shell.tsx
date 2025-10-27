@@ -43,6 +43,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { navItems, type NavItem } from '@/lib/nav-items';
 import { GlobalScanner } from './global-scanner';
+import { PwaUpdateNotification } from '../pwa-update-notification';
 
 
 function UserFormDialog({ user, onSave, onOpenChange, open }: { user: User | null; onSave: (name: string) => void; onOpenChange: (open: boolean) => void; open: boolean }) {
@@ -392,6 +393,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <>
               {children}
               <Toaster />
+              <PwaUpdateNotification />
             </>
           ) : null}
           {isClient && <UserSelectionDialog />}
