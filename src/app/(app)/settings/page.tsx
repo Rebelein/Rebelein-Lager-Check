@@ -31,14 +31,14 @@ if (typeof window !== 'undefined') {
 
 const availableModels = {
     google: [
-        { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro (Leistungsstärkstes Modell)' },
-        { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash (Schnell & Günstig)' },
-        { id: 'gemini-1.0-pro', name: 'Gemini 1.0 Pro (Vorgänger)' },
+        { id: 'gemini-2.5-pro-latest', name: 'Gemini 2.5 Pro (Leistungsstärkstes Modell)' },
+        { id: 'gemini-2.5-flash-latest', name: 'Gemini 2.5 Flash (Schnell & Günstig)' },
+        { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro (Vorgänger)' },
     ],
     openrouter: [
         { id: 'deepseek/deepseek-chat', name: 'DeepSeek Chat (Empfohlen)' },
         { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B Instruct (Free)' },
-        { id: 'google/gemini-flash-1.5', name: 'Google Gemini Flash 1.5' },
+        { id: 'google/gemini-flash-2.5', name: 'Google Gemini Flash 2.5' },
     ]
 }
 

@@ -126,13 +126,17 @@ const SortableTooltipLink = ({ id, item, active, isNavSortable }: { id: string, 
                     <Link
                         href={item.href}
                         className={cn(
-                            'relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8',
+                            'group relative flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-300 ease-in-out md:h-8 md:w-8',
                             active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
+                            'hover:w-32', // Expand width on hover
                             !isNavSortable && 'ml-4' // Adjust margin when not sortable
                         )}
                     >
-                        <item.icon className="h-5 w-5" />
+                        <item.icon className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110" />
                         <span className="sr-only">{item.label}</span>
+                        <span className="absolute left-10 text-sm font-medium opacity-0 transition-opacity duration-300 group-hover:opacity-100 whitespace-nowrap">
+                            {item.label}
+                        </span>
                     </Link>
                 </div>
             </TooltipTrigger>
